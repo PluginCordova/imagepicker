@@ -137,11 +137,21 @@
             android:name="com.photoselector.ui.PhotoSelectorPreview"
             android:label="点击图片" >
         </activity>
+        <activity
+            android:configChanges="orientation|screenSize"
+            android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
+            android:label="图片选择" >
+        </activity>
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest">
+        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 		    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 		</config-file>
+
+    <framework src="src/android/multi_image_selector.gradle" custom="true" type="gradleReference" />
+
+    <resource-file src="src/android/Library/libs/multi-image-selector-release.aar" target="libs/multi-image-selector-release.aar" />
 
 		<!--<framework src="src/android/Library/Android-Ultra-Photo-Selector" custom="true"/>-->
 

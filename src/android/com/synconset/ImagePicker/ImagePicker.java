@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -16,6 +17,8 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.photoselector.ui.PhotoSelectorActivity;
+
+import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 public class ImagePicker extends CordovaPlugin {
 	public static String TAG = "ImagePicker";
@@ -27,7 +30,8 @@ public class ImagePicker extends CordovaPlugin {
 		 this.callbackContext = callbackContext;
 		 this.params = args.getJSONObject(0);
 		if (action.equals("getPictures")) {
-			Intent intent = new Intent(cordova.getActivity(), PhotoSelectorActivity.class);
+			//Intent intent = new Intent(cordova.getActivity(), PhotoSelectorActivity.class);
+			Intent intent = new Intent(cordova.getActivity(), MultiImageSelectorActivity.class);
 			//Intent intent = new Intent(cordova.getActivity(), MultiImageChooserActivity.class);
 			int max = 20;
 			int desiredWidth = 0;
