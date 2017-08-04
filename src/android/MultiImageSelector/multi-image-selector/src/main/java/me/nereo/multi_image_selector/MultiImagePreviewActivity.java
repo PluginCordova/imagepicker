@@ -18,9 +18,7 @@ import java.util.ArrayList;
 
 public class MultiImagePreviewActivity extends AppCompatActivity {
 
-    private ArrayList<String> imgList = new ArrayList<>();
-
-    private int curImgIdx = 0;
+    private String imgPath = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +41,14 @@ public class MultiImagePreviewActivity extends AppCompatActivity {
         }
 
         final Intent intent = getIntent();
-        if(intent.hasExtra("preview_image_list")) {
-            imgList = intent.getStringArrayListExtra("preview_image_list");
+        if(intent.hasExtra("preview_image")) {
+            imgPath = intent.getStringExtra("preview_image");
         }
 
         final ImageView iv = (ImageView)findViewById(R.id.img_preview);
-        iv.setImageURI(Uri.fromFile(new File(imgList.get(curImgIdx))));
+        iv.setImageURI(Uri.fromFile(new File(imgPath)));
 
-        Button btnPrev = (Button)findViewById(R.id.btn_prev);
+        /*Button btnPrev = (Button)findViewById(R.id.btn_prev);
         Button btnNext = (Button)findViewById(R.id.btn_next);
         btnPrev.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +73,7 @@ public class MultiImagePreviewActivity extends AppCompatActivity {
                     iv.setImageURI(Uri.fromFile(new File(imgList.get(curImgIdx))));
                 }
             }
-        });
+        });*/
     }
 
     @Override

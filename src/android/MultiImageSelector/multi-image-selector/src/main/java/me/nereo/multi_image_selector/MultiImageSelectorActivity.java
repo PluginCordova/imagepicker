@@ -57,7 +57,7 @@ public class MultiImageSelectorActivity extends AppCompatActivity
 
     private ArrayList<String> resultList = new ArrayList<>();
     private Button mSubmitButton;
-    private Button mPreviewButton;
+    //private Button mPreviewButton;
     private int mDefaultCount = DEFAULT_IMAGE_SIZE;
 
     public static final String EXTRA_DESIRED_WIDTH = "WIDTH";
@@ -106,13 +106,13 @@ public class MultiImageSelectorActivity extends AppCompatActivity
             resultList = intent.getStringArrayListExtra(EXTRA_DEFAULT_SELECTED_LIST);
         }
 
-        mPreviewButton = (Button) findViewById(R.id.preview);
+        //mPreviewButton = (Button) findViewById(R.id.preview);
 
         mSubmitButton = (Button) findViewById(R.id.commit);
         if(mode == MODE_MULTI){
             updateDoneText(resultList);
             mSubmitButton.setVisibility(View.VISIBLE);
-            mPreviewButton.setVisibility(View.VISIBLE);
+            //mPreviewButton.setVisibility(View.VISIBLE);
             mSubmitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -134,7 +134,7 @@ public class MultiImageSelectorActivity extends AppCompatActivity
                     }
                 }
             });
-            mPreviewButton.setOnClickListener(new View.OnClickListener() {
+            /*mPreviewButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(resultList != null && resultList.size() >0){
@@ -145,10 +145,10 @@ public class MultiImageSelectorActivity extends AppCompatActivity
                         startActivity(intent);
                     }
                 }
-            });
+            });*/
         }else{
             mSubmitButton.setVisibility(View.GONE);
-            mPreviewButton.setVisibility(View.GONE);
+            //mPreviewButton.setVisibility(View.GONE);
         }
 
         if(savedInstanceState == null){
@@ -190,17 +190,17 @@ public class MultiImageSelectorActivity extends AppCompatActivity
             mSubmitButton.setText(R.string.mis_action_done);
             mSubmitButton.setEnabled(false);
 
-            mPreviewButton.setText(R.string.mis_action_preview);
-            mPreviewButton.setEnabled(false);
+            //mPreviewButton.setText(R.string.mis_action_preview);
+            //mPreviewButton.setEnabled(false);
         }else{
             size = resultList.size();
             mSubmitButton.setEnabled(true);
-            mPreviewButton.setEnabled(true);
+            //mPreviewButton.setEnabled(true);
         }
         mSubmitButton.setText(getString(R.string.mis_action_button_string,
                 getString(R.string.mis_action_done), size, mDefaultCount));
-        mPreviewButton.setText(getString(R.string.mis_action_button_string,
-                getString(R.string.mis_action_preview), size, mDefaultCount));
+        /*mPreviewButton.setText(getString(R.string.mis_action_button_string,
+                getString(R.string.mis_action_preview), size, mDefaultCount));*/
     }
 
     @Override
@@ -247,6 +247,16 @@ public class MultiImageSelectorActivity extends AppCompatActivity
             data.putStringArrayListExtra(EXTRA_RESULT, resultList);
             setResult(RESULT_OK, data);
             finish();
+        }
+    }
+
+    @Override
+    public void onImagePreview(String path) {
+        if(path != null && path.length() >0){
+            Intent intent = new Intent(MultiImageSelectorActivity.this, MultiImagePreviewActivity.class);
+            intent.putExtra("preview_image", path);
+
+            startActivity(intent);
         }
     }
 

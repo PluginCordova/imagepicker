@@ -3,6 +3,7 @@ package me.nereo.multi_image_selector.adapter;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ public class ImageGridAdapter extends BaseAdapter {
     private static final int TYPE_NORMAL = 1;
 
     private Context mContext;
+
+    private Callback mCallback = null;
 
     private LayoutInflater mInflater;
     private boolean showCamera = true;
@@ -62,6 +65,10 @@ public class ImageGridAdapter extends BaseAdapter {
      */
     public void showSelectIndicator(boolean b) {
         showSelectIndicator = b;
+    }
+
+    public void setCallback(Callback c) {
+        mCallback = c;
     }
 
     public void setShowCamera(boolean b){
@@ -187,6 +194,17 @@ public class ImageGridAdapter extends BaseAdapter {
             holder.bindData(getItem(i));
         }
 
+        ImageView iv_check = (ImageView)view.findViewById(R.id.checkmark);
+        final int idx = i;
+        final View gView = view;
+        iv_check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCallback != null)
+                    mCallback.onCheckBoxClicked(idx, gView);
+            }
+        });
+
         return view;
     }
 
@@ -233,6 +251,10 @@ public class ImageGridAdapter extends BaseAdapter {
                 image.setImageResource(R.drawable.mis_default_error);
             }
         }
+    }
+
+    public interface Callback{
+        void onCheckBoxClicked(final int idx, final View view);
     }
 
 }

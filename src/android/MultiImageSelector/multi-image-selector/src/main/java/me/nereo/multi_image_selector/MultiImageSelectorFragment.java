@@ -53,7 +53,7 @@ import me.nereo.multi_image_selector.utils.ScreenUtils;
  * Created by Nereo on 2015/4/7.
  * Updated by nereo on 2016/5/18.
  */
-public class MultiImageSelectorFragment extends Fragment {
+public class MultiImageSelectorFragment extends Fragment implements ImageGridAdapter.Callback {
 
     public static final String TAG = "MultiImageSelectorFragment";
 
@@ -128,6 +128,7 @@ public class MultiImageSelectorFragment extends Fragment {
         }
         mImageAdapter = new ImageGridAdapter(getActivity(), showCamera(), 3);
         mImageAdapter.showSelectIndicator(mode == MODE_MULTI);
+        mImageAdapter.setCallback(this);
 
         mPopupAnchorView = view.findViewById(R.id.footer);
 
@@ -161,12 +162,26 @@ public class MultiImageSelectorFragment extends Fragment {
                     if (i == 0) {
                         showCameraAction();
                     } else {
+                        if (mode == MODE_MULTI) {
+                            Image image = (Image) adapterView.getAdapter().getItem(i);
+                            if (mCallback != null)
+                                mCallback.onImagePreview(image.path);
+                        }
+                        else {
+                            Image image = (Image) adapterView.getAdapter().getItem(i);
+                            selectImageFromGrid(image, mode);
+                        }
+                    }
+                } else {
+                    if (mode == MODE_MULTI) {
+                        Image image = (Image) adapterView.getAdapter().getItem(i);
+                        if (mCallback != null)
+                            mCallback.onImagePreview(image.path);
+                    }
+                    else {
                         Image image = (Image) adapterView.getAdapter().getItem(i);
                         selectImageFromGrid(image, mode);
                     }
-                } else {
-                    Image image = (Image) adapterView.getAdapter().getItem(i);
-                    selectImageFromGrid(image, mode);
                 }
             }
         });
@@ -187,6 +202,22 @@ public class MultiImageSelectorFragment extends Fragment {
         });
 
         mFolderAdapter = new FolderAdapter(getActivity());
+    }
+
+    @Override
+    public void onCheckBoxClicked(final int i, final View view) {
+        final int mode = selectMode();
+        if (mImageAdapter.isShowCamera()) {
+            if (i == 0) {
+                showCameraAction();
+            } else {
+                Image image = (Image) mGridView.getAdapter().getItem(i);
+                selectImageFromGrid(image, mode);
+            }
+        } else {
+            Image image = (Image) mGridView.getAdapter().getItem(i);
+            selectImageFromGrid(image, mode);
+        }
     }
 
     /**
@@ -510,5 +541,6 @@ public class MultiImageSelectorFragment extends Fragment {
         void onImageSelected(String path);
         void onImageUnselected(String path);
         void onCameraShot(File imageFile);
+        void onImagePreview(String path);
     }
 }
