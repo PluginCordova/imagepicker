@@ -95,6 +95,19 @@ public class ImageGridAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void select(String imagePath, boolean selected) {
+        for (Image img: mImages) {
+            if (img.path.equals(imagePath)) {
+                if (selected)
+                    mSelectedImages.add(img);
+                else
+                    mSelectedImages.remove(img);
+
+                notifyDataSetChanged();
+            }
+        }
+    }
+
     /**
      * 通过图片路径设置默认选择
      * @param resultList

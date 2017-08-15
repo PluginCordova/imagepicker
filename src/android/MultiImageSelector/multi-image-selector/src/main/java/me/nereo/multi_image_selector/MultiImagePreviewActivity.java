@@ -20,6 +20,8 @@ public class MultiImagePreviewActivity extends AppCompatActivity {
 
     private String imgPath = null;
 
+    private boolean markChecked = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,10 +45,38 @@ public class MultiImagePreviewActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         if(intent.hasExtra("preview_image")) {
             imgPath = intent.getStringExtra("preview_image");
+            markChecked = intent.getBooleanExtra("selected", false);
         }
 
         final ImageView iv = (ImageView)findViewById(R.id.img_preview);
         iv.setImageURI(Uri.fromFile(new File(imgPath)));
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent data = new Intent();
+                Bundle res = new Bundle();
+                res.putBoolean("SELECTED", markChecked);
+                res.putString("SELECTEDFILE", imgPath);
+                data.putExtras(res);
+                setResult(RESULT_OK, data);
+
+                finish();
+            }
+        });
+
+        ImageView ivMark = (ImageView)findViewById(R.id.bigcheckmark);
+        if (markChecked)
+            ivMark.setImageResource(R.drawable.mis_btn_selected);
+        ivMark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                markChecked = !markChecked;
+                if (markChecked)
+                    ((ImageView)view).setImageResource(R.drawable.mis_btn_selected);
+                else
+                    ((ImageView)view).setImageResource(R.drawable.mis_btn_unselected);
+            }
+        });
 
         /*Button btnPrev = (Button)findViewById(R.id.btn_prev);
         Button btnNext = (Button)findViewById(R.id.btn_next);
@@ -80,7 +110,14 @@ public class MultiImagePreviewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                setResult(RESULT_CANCELED);
+
+                Intent data = new Intent();
+                Bundle res = new Bundle();
+                res.putBoolean("SELECTED", markChecked);
+                res.putString("SELECTEDFILE", imgPath);
+                data.putExtras(res);
+                setResult(RESULT_OK, data);
+
                 finish();
                 return true;
         }

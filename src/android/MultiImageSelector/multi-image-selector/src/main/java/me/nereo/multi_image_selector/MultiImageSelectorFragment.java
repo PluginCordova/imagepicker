@@ -388,6 +388,10 @@ public class MultiImageSelectorFragment extends Fragment implements ImageGridAda
         }
     }
 
+    public void updateAdapterGUI(String path, boolean selected) {
+        mImageAdapter.select(path, selected);
+    }
+
     /**
      * notify callback
      * @param image image data

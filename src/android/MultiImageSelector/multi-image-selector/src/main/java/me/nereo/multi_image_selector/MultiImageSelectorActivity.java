@@ -1,5 +1,6 @@
 package me.nereo.multi_image_selector;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -66,6 +67,8 @@ public class MultiImageSelectorActivity extends AppCompatActivity
     private int desiredWidth = 480;
     private int desiredHeight = 640;
     private int quality = 100;
+
+    private MultiImageSelectorFragment imgSelectorFragment = null;
 
     private ProgressDialog progress;
 
@@ -158,8 +161,10 @@ public class MultiImageSelectorActivity extends AppCompatActivity
             bundle.putBoolean(MultiImageSelectorFragment.EXTRA_SHOW_CAMERA, isShow);
             bundle.putStringArrayList(MultiImageSelectorFragment.EXTRA_DEFAULT_SELECTED_LIST, resultList);
 
+            imgSelectorFragment = (MultiImageSelectorFragment)Fragment.instantiate(this, MultiImageSelectorFragment.class.getName(), bundle);
+
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.image_grid, Fragment.instantiate(this, MultiImageSelectorFragment.class.getName(), bundle))
+                    .add(R.id.image_grid, imgSelectorFragment)
                     .commit();
         }
 
@@ -255,9 +260,33 @@ public class MultiImageSelectorActivity extends AppCompatActivity
         if(path != null && path.length() >0){
             Intent intent = new Intent(MultiImageSelectorActivity.this, MultiImagePreviewActivity.class);
             intent.putExtra("preview_image", path);
+            boolean selected = resultList.contains(path);
+            intent.putExtra("selected", selected);
 
-            startActivity(intent);
+            startActivityForResult(intent, 100);
         }
+    }
+
+    private void updateAdapterGUI(String path, boolean selected) {
+        if (imgSelectorFragment != null)
+            imgSelectorFragment.updateAdapterGUI(path, selected);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null && requestCode == 100) {
+            boolean selected = data.getBooleanExtra("SELECTED", false);
+            String imgPath = data.getStringExtra("SELECTEDFILE");
+            if (selected) {
+                onImageSelected(imgPath);
+                updateAdapterGUI(imgPath, selected);
+            }
+            else {
+                onImageUnselected(imgPath);
+                updateAdapterGUI(imgPath, selected);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private float calculateScale(int width, int height) {
